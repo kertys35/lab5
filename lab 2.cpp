@@ -180,6 +180,56 @@ public:
         strcpy(doctor_name, new_doctor_name);
     }
 
+//// /////Двумерный массив ///////////
+    void doc_list_in(int line,doctor doctor_list[30][30], char doctorname[40], char patientname[40])
+    {
+        int check = 1,i=0;
+        for (int k = 0; k < line; k++)
+        {
+            if ((_stricmp(doctorname, doctor_list[k][0].doctor_name) != 0) && doctor_list[k][0].id<0&&check==1)
+            {
+                doctor_list[k][0].id = 1;
+                strcpy(doctor_list[k][0].doctor_name, doctorname);
+                strcpy(doctor_list[k][0].patient_name, patientname);
+            }
+            else
+            {
+                if ((_stricmp(doctorname, doctor_list[k][0].doctor_name) == 0))
+                {
+                    check = 0;
+                    while (doctor_list[k][i].id > 0)
+                    {
+                        i++;
+                    }
+                        doctor_list[k][i].id = i + 1;
+                        strcpy(doctor_list[k][i].doctor_name, "");
+                        strcpy(doctor_list[k][i].patient_name, patientname);
+                }
+            }
+
+        }
+    }
+    void doc_list_out(int line, doctor doc_list[30][30])
+    {
+        printf("_____________________________________________________\n");
+        printf("|Врач                    |Пациент                   |\n");
+        for (int k = 0; k < line; k++)
+        {
+            
+            for (int i = 0; i < line; i++)
+            {
+                if (doc_list[k][i].id > 0)
+                {
+                    printf("|%24s|", doc_list[k][i].doctor_name);
+                    printf("%24s  |\n", doc_list[k][i].patient_name);
+                }
+            }
+            if(doc_list[k][0].id>0)
+            printf("|________________________|__________________________|\n");
+        }
+        printf("\n\n\n");
+    }
+//////Конец операций над двумерным массивом/////
     void doc_del(int line, doctor doc[30])
     {
         int i = 0, check = 0;
@@ -384,17 +434,28 @@ int main()
     hosp[0] = { 1,"Борисов Ф.А.", "Городская поликлиника №12" };
     doctor doc[30];
     doc[0] = { 1,"Александр И.И.","Борисов Ф.А." };
+    doctor doc_list[30][30];
+    doc_list[0][0] = { 1,"Александр И.И.","Борисов Ф.А." };
     sickness* ill = new sickness[30]{};
     ill[0] = { 1,"Грипп","Острое респираторное вирусное заболевание, вызываемое вирусами гриппа,поражающее верхние дыхательные пути" };
     int repeat = 1;
     do {
         check_lines = 0;
         patients->out(patients);
-        printf("Введите:\n1-для просмотра данных о пациенте\n2-для просмотра данных о болезни\n3-для просмотра состояния пациета\n4-для удаления строки\n5-для добавления строки\n6-Записать таблицу в файл\n7-закрыть программу\n");
+        printf("Введите:\n1-для просмотра данных о пациенте\n2-для просмотра данных о болезни\n3-для просмотра состояния пациета\n4-для удаления строки\n5-для добавления строки\n6-Записать таблицу в файл\n7-закрыть программу\n8-Вывод докторов и всех их пациентов\n");
         int choice_patient, choice_doctor;
-        do {
-            scanf_s("%d", &choice_patient);
-        } while (choice_patient > 7 || choice_patient < 1);
+ /////////////////try блок//
+        try {
+            do {
+                scanf_s("%d", &choice_patient);
+            } while (choice_patient > 8 || choice_patient < 1);
+            if (choice_patient > 8 || choice_patient < 1)
+                throw(choice_patient);
+        }
+        catch (int vvod) {
+            printf("Неподходящий ввод\n");
+        }
+ //////////конец try блока//
         switch (choice_patient)
         {
             //просмотр данных о пациенте
@@ -512,6 +573,7 @@ int main()
                 gets_s(statusname);
             } while (_stricmp(statusname, "Здоров") != 0 && _stricmp(statusname, "Умеренное") != 0 && _stricmp(statusname, "Серьёзное") != 0);
             state->new_line(total_lines, statusname, state);
+            doc->doc_list_in(total_lines,doc_list,doctorname,patientname);
             patients->input_patient(total_lines, patients, patientname, illnessname, statusname);
             break;
             //Записать таблицу в файл
@@ -535,6 +597,11 @@ int main()
         case 7:
             repeat = 0;
             break;
+        /////вывод всех докторов и их пациентов
+        case 8:
+            doc->doc_list_out(total_lines, doc_list);
+            break;
+
         default:
             break;
         }
