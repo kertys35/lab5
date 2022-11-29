@@ -186,7 +186,7 @@ public:
         int check = 1,i=0;
         for (int k = 0; k < line; k++)
         {
-            if ((_stricmp(doctorname, doctor_list[k][0].doctor_name) != 0) && doctor_list[k][0].id<0&&check==1)
+            if ((_stricmp(doctorname, doctor_list[k][0].doctor_name) != 0) && doctor_list[k][0].id<1&&check==1)
             {
                 doctor_list[k][0].id = 1;
                 strcpy(doctor_list[k][0].doctor_name, doctorname);
@@ -209,14 +209,29 @@ public:
 
         }
     }
+    void doc_list_del(int total_lines,int line,doctor doc[30],doctor doc_list[30][30])
+    {
+        for (int k = 0; k < total_lines; k++)
+        {
+            for (int i = 0; i < total_lines; i++)
+            {
+                if (_stricmp(doc_list[k][i].patient_name, doc[line-1].patient_name) == 0)
+                {
+                    doc_list[k][i].id = 0;
+                    strcpy(doc_list[k][i].doctor_name, "");
+                    strcpy(doc_list[k][i].patient_name, "");
+                }
+            }
+        }
+    }
     void doc_list_out(int line, doctor doc_list[30][30])
     {
         printf("_____________________________________________________\n");
         printf("|Врач                    |Пациент                   |\n");
-        for (int k = 0; k < line; k++)
+        for (int k = 0; k < 30; k++)
         {
             
-            for (int i = 0; i < line; i++)
+            for (int i = 0; i < 30; i++)
             {
                 if (doc_list[k][i].id > 0)
                 {
@@ -446,14 +461,16 @@ int main()
         int choice_patient, choice_doctor;
  /////////////////try блок//
         try {
-            do {
+
                 scanf_s("%d", &choice_patient);
-            } while (choice_patient > 8 || choice_patient < 1);
             if (choice_patient > 8 || choice_patient < 1)
                 throw(choice_patient);
         }
         catch (int vvod) {
-            printf("Неподходящий ввод\n");
+            do {
+                printf("Неподходящий ввод\n");
+                scanf_s("%d", &choice_patient);
+            } while (choice_patient > 8 || choice_patient < 1);
         }
  //////////конец try блока//
         switch (choice_patient)
@@ -539,6 +556,7 @@ int main()
                 } while (line_num > total_lines || line_num < 1);
                 patients->patient_del(line_num, patients);
                 hosp->hosp_del(line_num, hosp);
+                doc->doc_list_del(total_lines,line_num,doc,doc_list);
                 doc->doc_del(line_num, doc);
                 state->del_line(line_num, state);
                 total_lines--;
