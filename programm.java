@@ -213,13 +213,13 @@ class doctor
 	{
 		int i = 0;
 		int check = 0;
-	while (doc[i+1]!=null&&doc[i]!=null&&doc[i].id > 0)
+	while (doc[i].id > 0)
 	{
 		if (doc[i].id == line)
 		{
 			check = 1;
 		}
-		if (check != 0)
+		if (check==1)
 		{
 			doc[i]=doc[i + 1];
 			 if(doc[i].id!=0)
@@ -229,7 +229,84 @@ class doctor
 	}
 	doc[i -1].id=0;
 	}
+//// /////Двумерный массив ///////////
+    public void doc_list_in(int line,doctor doc_list[][], String doctorname, String patientname)
+    {
+        int check = 1,i=0;
+        for (int k = 0; k < line; k++)
+        {
+            if (doctorname.compareToIgnoreCase(doc_list[k][0].doctor_name) != 0 && doc_list[k][0].id<1&&check==1)
+            {
+                doc_list[k][0].id = 1;
+                doc_list[k][0].doctor_name= doctorname;
+                doc_list[k][0].patient_name= patientname;
+		check=0;
+            }
+            else
+            {
+                if (doctorname.compareToIgnoreCase(doc_list[k][0].doctor_name) == 0)
+                {
+                    check = 0;
+                    while (doc_list[k][i].id > 0)
+                    {
+                        i++;
+                    }
+                        doc_list[k][i].id = i + 1;
+                        doc_list[k][i].doctor_name= "";
+                        doc_list[k][i].patient_name= patientname;
+                }
+            }
 
+        }
+    }
+   public  void doc_list_del(int total_lines,int line,doctor doc[],doctor doc_list[][])
+    {
+	int count=0;
+        for (int k = 0; k < 30; k++)
+        {
+            for (int i = 0; i < 30; i++)
+            {
+                if (doc_list[k][i].patient_name.compareToIgnoreCase(doc[line-1].patient_name) == 0)
+                {
+		    if(k!=0)
+                    	doc_list[k][i].id = 0;
+                    doc_list[k][i].patient_name= "";
+                }
+		if(doc_list[k][i].patient_name.compareToIgnoreCase("")!=0)
+			{
+				count++;
+				
+			}		
+
+            }
+	    if(count==0)
+	       {
+		  doc_list[k][0].doctor_name= "";
+		  doc_list[k][0].id = 0;
+		}
+        }
+    }
+   public  void doc_list_out(int line, doctor doc_list[][])
+    {
+        System.out.printf("_____________________________________________________\n");
+        System.out.printf("|Врач                    |Пациент                   |\n");
+        for (int k = 0; k < 30; k++)
+        {
+            
+            for (int i = 0; i < 30; i++)
+            {
+                if (doc_list[k][i].id > 0)
+                {
+                    System.out.printf("|%24s|", doc_list[k][i].doctor_name);
+                    System.out.printf("%24s  |\n", doc_list[k][i].patient_name);
+                }
+            }
+            if(doc_list[k][0].id>0)
+            System.out.printf("|________________________|__________________________|\n");
+        }
+        System.out.printf("\n\n\n");
+    }
+//////Конец операций над двумерным массивом/////
 	public final void close()
 	{
 
@@ -474,6 +551,7 @@ class status
 		hospital[] hosp = new hospital[30];
 		hosp[0] = new hospital(1,"Борисов Ф.А.", "Городская поликлиника №12");
 		doctor[] doc = new doctor[30];
+		doctor[][] doc_list = new doctor[30][30];
 		doc[0] = new doctor(1,"Александр И.И.","Борисов Ф.А.");
 		sickness[] ill = new sickness[30];
 		ill[0] = new sickness(1,"Грипп","Острое респираторное вирусное заболевание, вызываемое вирусами гриппа,поражающее верхние дыхательные пути");
@@ -483,21 +561,30 @@ class status
 		    hosp[k] = new hospital();
 		for(int k=1;k<30;k++)
 		    doc[k] = new doctor();
-    	for(int k=1;k<30;k++)
+    		for(int k=1;k<30;k++)
 		    ill[k] = new sickness();
-		
+    		for(int k=0;k<30;k++)
+		        for(int m=0;m<30;m++)
+		            {
+		                if(k==0&&m==0)
+		                    doc_list[0][0] = new doctor(1,"Александр И.И.","Борисов Ф.А.");
+		                else
+		                    doc_list[k][m] = new doctor();
+		                
+		            
+		            }
 		int repeat = 1;
 		do
 		{
 			check_lines = 0;
 			patients[0].out(patients);
-			System.out.print("Введите:\n1-для просмотра данных о пациенте\n2-для просмотра данных о болезни\n3-для просмотра состояния пациета\n4-для удаления строки\n5-для добавления строки\n6-Записать таблицу в файл\n7-закрыть программу\n");
+			System.out.print("Введите:\n1-для просмотра данных о пациенте\n2-для просмотра данных о болезни\n3-для просмотра состояния пациета\n4-для удаления строки\n5-для добавления строки\n6-Записать таблицу в файл\n7-закрыть программу\n8-Вывод докторов и всех их пациентов\n");
 			int choice_patient;
 			int choice_doctor;
 			do
 			{
 				choice_patient=in.nextInt();
-			} while (choice_patient > 7 || choice_patient < 1);
+			} while (choice_patient > 8 || choice_patient < 1);
 			switch (choice_patient)
 			{
 			   //просмотр данных о пациенте
@@ -596,6 +683,7 @@ class status
 					patients[0].patient_del(line_num, patients);
 					hosp[0].hosp_del(line_num, hosp);
 					ill[0].ill_del(line_num,ill);
+					doc_list[0][0].doc_list_del(total_lines,line_num,doc,doc_list);
 					doc[0].doc_del(line_num, doc);
 					state[0].del_line(line_num, state);
 					total_lines--;
@@ -622,6 +710,7 @@ class status
 						ch=doctorname.length();
 					} while (ch == 0);
 					doc[0].input_doc(total_lines,doc,doctorname,patientname);
+					doc_list[0][0].doc_list_in(total_lines,doc_list,doctorname,patientname);
 					System.out.print("Введите название больницы доктора:\n");
 					do
 					{
@@ -677,6 +766,8 @@ class status
 			case 7:
 				repeat = 0;
 				break;
+			case 8:///вывод списка врачей и их пациентов
+				doc_list[0][0].doc_list_out(total_lines,doc_list);
 			default:
 				break;
 			}
