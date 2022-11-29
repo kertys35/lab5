@@ -1,4 +1,4 @@
 ﻿  lab 2.cpp
-C:\Users\Papa\Desktop\Программирование семестр 3\5\lab5\lab 2.cpp(375,13): warning C4101: id: неиспользованная локальная переменная
-C:\Users\Papa\Desktop\Программирование семестр 3\5\lab5\lab 2.cpp(469,20): warning C4101: vvod: неиспользованная локальная переменная
+C:\Users\Papa\Desktop\Программирование семестр 3\5\lab5\lab 2.cpp(385,13): warning C4101: id: неиспользованная локальная переменная
+C:\Users\Papa\Desktop\Программирование семестр 3\5\lab5\lab 2.cpp(479,20): warning C4101: vvod: неиспользованная локальная переменная
   lab 2.vcxproj -> C:\Users\Papa\Desktop\Программирование семестр 3\5\lab5\x64\Debug\lab 2.exe
